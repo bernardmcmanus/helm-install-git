@@ -1,0 +1,10 @@
+name: install-git
+version: 0.1.0
+usage: Install helm charts directly from a git repository
+description: |-
+  Install a helm chart directly from a git repository.
+  Useful for installing charts that have not been published to a registry.
+  See `helm install-git --help` for usage.
+command: $HELM_PLUGIN_DIR/helm_install_git.sh
+useTunnel: false
+ignoreFlags: false
