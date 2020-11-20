@@ -44,12 +44,13 @@ trap 'rm -rf $tmp_dir' EXIT
 
 cd $tmp_dir
 
-repo_dir=$owner-$repo-$version
 url=https://github.com/$owner/$repo/tarball/$version
+
+package_file=
 
 log "Downloading: $url"
 
-curl -L# $url | tar -xzf - $repo_dir
+curl -L# $url | tar -xzf -
 
 # Helm requires that the directory name and Chart.yaml name match
 old_chart_dir=`dirname $(find . -name Chart.yaml)`
