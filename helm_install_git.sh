@@ -33,10 +33,28 @@ if ! [[ $# ]] || [[ "${@:1}" =~ -h$|--help$|^help$ ]]; then
   exit
 fi
 
-owner=`echo $1 | awk -F/ '{ print $1; }'`
-repo=`echo $1 | awk -F/ '{ print $2; }'`
-version=`echo $1 | awk -F/ '{ print $3; }'`
+identifier=$1
+owner=`echo $identifier | awk -F/ '{ print $1; }'`
+repo=`echo $identifier | awk -F/ '{ print $2; }'`
+version=`echo $identifier | awk -F/ '{ print $3; }'`
 version=${version:-"master"}
+release_name=$repo
+
+while (( $# )); do
+  case "$1" in
+    $identifier)
+      shift 1;
+      ;;
+    --name|--name-template)
+      release_name="${2-}"
+      shift 2
+      ;;
+    *)
+      helm_args+=("$1")
+      shift 1
+      ;;
+  esac
+done
 
 tmp_dir=`mktemp -d`
 
@@ -60,4 +78,4 @@ mv $old_chart_dir $chart_dir
 helm package $chart_dir
 package_file=$PWD/$(ls $repo-*.tgz)
 
-exec helm upgrade $repo $package_file --install ${@:2}
+exec helm upgrade $release_name $package_file --install ${helm_args[*]}
